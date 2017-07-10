@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <![endif]-->
+    <title>Nice responsive template for blogger</title>
+    <!-- BOOTSTRAP CORE STYLE -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet" />
+    <!-- FONT AWESOME ICON STYLE -->
+    <link href="/static/css/font-awesome.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE CSS -->
+    <link href="/static/css/style.css" rel="stylesheet" />
+    <link href="https://cdn.bootcss.com/bootstrap-markdown/2.10.0/css/bootstrap-markdown.min.css" rel="stylesheet">
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+    <div id="header">
+        <div class="overlay">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 logo-div">
+                        <div class="logo-inner text-center">
+                            <div class="logo-name">
+                                <a href="index.html">
+                                    <img src="/static/img/me.jpeg" class="img-circle" />
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-8 header-text-top " id="about">
+
+
+
+                        <h1>Nice responsive template for blogger.</h1>
+						This blogging template use bootstrap and html to create a very nice blogging page with great responsive. <br />
+						Here you can write a general notes about your blog.<br />
+						<h2><strong>Who I am ? </strong></h2>
+                        <i>I am Jhon Deo </i>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END HEADER SECTION-->
+    <div class="info-sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+{#                    Say hello to me at <strong>hello</strong>@yourdomain.com#}
+                    <ul class="nav nav-tabs">
+                      <li role="presentation"><a href="#">全部文章</a></li>
+                      <li role="presentation"><a href="#">最热门文章</a></li>
+                      <li role="presentation"><a href="#">最新文章</a></li>
+
+                        <li class="dropdown navbar-right">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">教程系列<span class="caret"></span></a>
+                          <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="#">使用django快速开发restful网站教程</a></li>
+                            <li><a href="#">djangorestframework框架入门教程</a></li>
+                            <li><a href="#">python爬虫实战教程</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                          </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+{#                    <div class="social-link">#}
+{#                        <a href="#" class="btn btn-default btn-xs"><i class="fa fa-facebook fa-2x"></i></a>#}
+{#                        <a href="#" class="btn btn-default btn-xs"><i class="fa fa-linkedin fa-2x"></i></a>#}
+{#                        <a href="#" class="btn btn-default btn-xs"><i class="fa fa-google-plus fa-2x"></i></a>#}
+{#                    </div>#}
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Search for...">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                      </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="copyrights">Collect from <a href="http://blog.luosongtao.com/"  title="website"></a>website</div>
+    <!--END INFO SECTION-->
+     <div class="container">
+        <div class="row">
+            <div class="col-md-8 ">
+    {% block content %}
+    {% endblock %}
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3" style="padding-top: 30px;">
+				<div class="row">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>CATEGORIES</strong></li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Morbi leo risus</li>
+                    <li class="list-group-item">Porta ac consectetur ac</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Morbi leo risus</li>
+                    <li class="list-group-item">Porta ac consectetur ac</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+				</div>
+				<div class="row">
+				<h3>Advertising</h3>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <!--END HOME PAGE SECTION-->
+    <div class="footer-sec" style="margin-top: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 foo-inner">
+                    &copy; 2017 blog.luosongtao.com | Powered BY <a href="http://www.cssmoban.com/" target="_blank" title="Django">Django</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">Bootstrape</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END FOOTER SECTION -->
+    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME -->
+    <!-- CORE JQUERY -->
+    <script src="/static/js/jquery-1.11.1.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-markdown/2.10.0/js/bootstrap-markdown.min.js"></script>
+    <!-- BOOTSTRAP SCRIPTS -->
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/website.js"></script>
+    {% block script %}
+    <script>
+        $(function() {
+            $('textarea').markdown();
+            getListData()
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>
