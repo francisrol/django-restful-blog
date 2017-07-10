@@ -40,7 +40,7 @@ var list_template = '<div class="blog-post"><h2><a href="/detail/{4}/" target="_
 
 var detail_template = '<div class="blog-post"><h2>{0}</h2><div class="clearfix"><h4 class="pull-left">{1}</h4><div class="pull-right"><em>关键字：{2}</em></div></div><blockquote >{3}</blockquote>{4}</div>';
 
-var radio_template = '<label class="radio-inline"><input type="radio" name="category" value="{0}"> {1}</label>';
+var radio_template = '<option>{0}</option>';
 
 var parmas = {
         "url": "/",
@@ -49,6 +49,63 @@ var parmas = {
         "success": function(data){
         }
     };
+
+function getCategories(){
+    /*
+    获取分类信息
+     */
+    $.ajax({
+        "url": "/api/blog/categories/",
+        "type" : 'GET',
+        "success" : function(data){
+            data = JSON.parse(data);
+            var html = '';
+            for(var i=0;i<data.length; i++){
+                var category = data[i];
+                var oneHtml = radio_template.format(category[1]);
+                html += oneHtml;
+            }
+            $('#category').html(html);
+        }
+    });
+}
+
+function sendBlogData(sendData, url, method, redirectUrl){
+    /*
+    发送数据到服务器保存
+     */
+    parmas.url = '/api/blog' + url;
+    parmas.type = method;
+    parmas.data = sendData;
+    parmas.success = function (data) {
+        console.log(data);
+        location.assign(redirectUrl);
+    }
+    $.ajax(parmas);
+}
+
+function clickSubmit(url, method, redirectUrl){
+    /*
+    点击保存按钮
+     */
+    $('#blog-form').submit(function () {
+        var title = $("#title").val();
+        var summary = $("#summary").val();
+        var content = $("#content").val();
+        var keyWords = $("#keyWords").val();
+        var category = $('#category').val();
+        var data = {
+            "title" : title,
+            "summary" : summary,
+            "content" : content,
+            "keyWords" : keyWords,
+            "category" : category
+        }
+        data = JSON.stringify(data);
+        sendBlogData(data, url, method, redirectUrl);
+        return false;
+    })
+}
 
 function getListData(){
     /*
@@ -85,27 +142,11 @@ function getBlogDetail(){
         console.log(blog.title);
         var html = detail_template.format(blog.title, blog.createdTime, blog.keyWords, blog.summary, blog.content);
         $('.blog-detail').html(html);
+        $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
     };
     $.ajax(parmas)
-}
-
-function getCategories(){
-    /*
-    获取分类信息
-     */
-    parmas2 = parmas;
-    parmas2.url = '/api/blog/categories/';
-    parmas2.type = 'GET';
-    parmas2.success = function(data){
-        var html = '';
-        for(var i=0;i<data.length; i++){
-            var category = data[i]
-            var oneHtml = radio_template.format(category[1], category[1]);
-            html += oneHtml;
-        }
-        $('#radio-category').html(html);
-    }
-    $.ajax(parmas);
 }
 
 function getBlogEdit(){
@@ -113,10 +154,10 @@ function getBlogEdit(){
     博客编辑页调用
     获取某篇文章详情
      */
+    getCategories();
     url = location.pathname;
     parmas.url = '/api/blog/detail/' + url.split('/')[2] + '/';
     parmas.type = 'GET';
-    console.log(url);
     parmas.success = function(data){
         data = JSON.parse(data);
         var blog = data[0].fields;
@@ -124,16 +165,22 @@ function getBlogEdit(){
         $("#summary").val(blog.summary);
         $("#content").val(blog.content);
         $("#keyWords").val(blog.keyWords);
+        $('#category').val(blog.category);
+        method = 'PUT';
+        redirectUrl = url;
+        clickSubmit(url, method, redirectUrl)
     };
     $.ajax(parmas);
 }
 
-// function deleteBlog(url, params){
-//
-// }
-
-// function editBlog(url, params){
-//
-// }
-
+function getCreateBlog(){
+    /*
+    创建博客
+     */
+    getCategories();
+    url = location.pathname;
+    method = 'POST';
+    redirectUrl = '/';
+    clickSubmit(url, method, redirectUrl);
+}
 

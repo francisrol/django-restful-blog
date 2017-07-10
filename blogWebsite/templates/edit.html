@@ -8,27 +8,27 @@
 {% endblock %}
 {% block content %}
             <div class="edit-form">
-                <form>
+                <form id="blog-form">
                   <div class="form-group">
                     <label for="title">标题</label>
-                    <input type="email" class="form-control" id="title" name="title" placeholder="文章标题">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="文章标题">
                   </div>
                   <div class="form-group">
                     <label for="summary">摘要</label>
-                      <textarea type="password" class="form-control" rows="3" id="summary" name="summary" data-provide="markdown" placeholder="  摘要内容"></textarea>
+                      <textarea type="text" class="form-control" rows="3" id="summary" name="summary" data-provide="markdown" placeholder="  摘要内容"></textarea>
                   </div>
                     <div class="form-group">
                     <label for="content">正文</label>
-                        <textarea type="password" class="form-control" rows="10" id="content" name="content" data-provide="markdown" placeholder="  正文内容"></textarea>
+                        <textarea type="text" class="form-control" rows="10" id="content" name="content" data-provide="markdown" placeholder="  正文内容"></textarea>
                   </div>
                     <div class="form-group">
                         <label for="radio-category">分类</label>
-                        <div class="form-control" id="radio-category">
-                        </div>
+                        <select class="form-control" id="category">
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="keyWords">关键词</label>
-                        <input type="email" class="form-control" id="keyWords" name="keyWords" placeholder="关键词">
+                        <input type="text" class="form-control" id="keyWords" name="keyWords" placeholder="关键词">
                     </div>
                   <button type="submit" class="btn btn-default">上传保存</button>
                 </form>
@@ -37,9 +37,12 @@
 {% block script %}
     <script>
         $(function () {
+            clickSubmit();
             var self_url = location.pathname;
-            if (self_url != 'create'){
+            if (self_url != '/create/'){
                 getBlogEdit();
+            }else {
+                getCreateBlog();
             }
         })
     </script>

@@ -15,6 +15,7 @@
     <link href="/static/css/font-awesome.css" rel="stylesheet" />
     <!-- CUSTOM STYLE CSS -->
     <link href="/static/css/style.css" rel="stylesheet" />
+    <link href="/static/css/monokai.css" rel="stylesheet" />
     <link href="https://cdn.bootcss.com/bootstrap-markdown/2.10.0/css/bootstrap-markdown.min.css" rel="stylesheet">
     {% block css %}
     {% endblock %}
@@ -57,9 +58,10 @@
                 <div class="col-md-8">
 {#                    Say hello to me at <strong>hello</strong>@yourdomain.com#}
                     <ul class="nav nav-tabs">
-                      <li role="presentation"><a href="#">全部文章</a></li>
-                      <li role="presentation"><a href="#">最热门文章</a></li>
-                      <li role="presentation"><a href="#">最新文章</a></li>
+                        <li role="presentation"><a href="/">全部文章</a></li>
+                        <li role="presentation"><a href="#">最热门文章</a></li>
+                        <li role="presentation"><a href="#">最新文章</a></li>
+                        <li role="presentation"><a href="/create/">新建文章</a></li>
 
                         <li class="dropdown navbar-right">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">教程系列<span class="caret"></span></a>
@@ -136,6 +138,7 @@
     <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME -->
     <!-- CORE JQUERY -->
     <script src="/static/js/jquery-1.11.1.js"></script>
+    <script src="/static/js/highlight.pack.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap-markdown/2.10.0/js/bootstrap-markdown.min.js"></script>
     <!-- BOOTSTRAP SCRIPTS -->
     <script src="/static/js/bootstrap.js"></script>

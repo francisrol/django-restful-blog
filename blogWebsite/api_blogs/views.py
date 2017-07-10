@@ -27,7 +27,7 @@ def blogList(request, orderby='createdTime', ):
         data = json.dumps({"message": "only allowed GET method"})
         return HttpResponse(data, status=405)
 
-    allBlogObj = BlogModel.objects.all()
+    allBlogObj = BlogModel.objects.all().order_by('-createdTime')
     # 因为allBlogObj是django的QuerySet对象
     # 所以需要使用from django.core import serializers
     # 把对象序列化为json格式数据
