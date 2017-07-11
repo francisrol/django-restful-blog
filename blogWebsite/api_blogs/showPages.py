@@ -16,7 +16,8 @@ def edit(request):
 
 urlpatterns = [
     url(r'^$', index),
-    url(r'detail/.+?/$', detail),
-    url(r'edit/.+?/$', edit),
-    url(r'create/$', create),
+    url(r'^category/.+?/$', index),
+    url(r'^detail/.+?/$', detail),
+    url(r'^edit/.+?/$', edit),
+    url(r'^create/$', create),
 ]

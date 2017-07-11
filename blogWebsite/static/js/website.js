@@ -44,7 +44,10 @@ var radio_template = '<option>{0}</option>';
 
 var page_template = '<li><a href="{0}">{1}</a></li>';
 
-var category_template = '<li class="list-group-item btn btn-default">{0}</li>';
+var active_page_template = '<li class="active"><a>{0}</a></li>';
+
+var category_template = '<li class="list-group-item btn btn-default"><a href="{0}" class="list-group-item">{1}</a></li>';
+
 
 var parmas = {
         "url": "/",
@@ -156,6 +159,7 @@ function createPageHtml(pageObj){
         $('.page_previous a').prop('href', path_url + '?' + searchObjToString(searchObj));
     }else{
         $('.page_previous').addClass("disabled");
+        $(".page_previous a").removeAttr("href");
     }
     // 判断是否有下一页
     if (pageObj.has_next){
@@ -163,10 +167,16 @@ function createPageHtml(pageObj){
         $('.page_next a').prop('href', path_url + '?' + searchObjToString(searchObj));
     }else{
         $('.page_next').addClass("disabled");
+        $(".page_next a").removeAttr("href");
     }
     for(var i=0;i<parseInt(pageObj.page_numbers); i++){
         searchObj.page = i+1;
-        var html = page_template.format(path_url + '?' + searchObjToString(searchObj), i+1);
+        var html = '';
+        if (i+1==parseInt(pageObj.page_index)){
+            html = active_page_template.format(i+1);
+        }else {
+            html = page_template.format(path_url + '?' + searchObjToString(searchObj), i + 1);
+        }
         pageHtml += html;
     }
     $(".pagination li").eq(0).after(pageHtml);  // 将生成的html加载到页面
@@ -179,7 +189,7 @@ function getListData(){
     获取博客列表
      */
     search_parmas = searchStringToObj();
-    parmas.url = '/api/blog/list/';
+    parmas.url = '/api/blog/list' + location.pathname;
     parmas.data = search_parmas;
     parmas.type = 'GET';
     parmas.success = function (data) {
@@ -261,10 +271,13 @@ function showCategory(){
             data = JSON.parse(data);
             var categoryHtml = '';
             for(var i=0;i<data.length; i++){
-                var html = category_template.format(data[i][1]);
+                var html = category_template.format("/category/"+data[i][1]+"/",data[i][1]);
                 categoryHtml += html;
             }
             $(".list-group li").after(categoryHtml);
         }
     });
+}
+
+function clickCategory(){
 }
