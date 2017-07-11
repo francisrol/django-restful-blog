@@ -1,7 +1,5 @@
 # encoding=utf-8
 from datetime import datetime
-import json
-from django.core import serializers
 from django.core.paginator import Page
 from django.db.models.query import QuerySet
 
@@ -9,6 +7,7 @@ from django.db.models.query import QuerySet
 class PageOrQuerySetSerializer(object):
 
     def __init__(self):
+        # 需要用到的Page对象的属性
         self.pageAttr = ['has_next',
                          'has_previous',
                          'has_other_pages',
@@ -16,6 +15,11 @@ class PageOrQuerySetSerializer(object):
                          'end_index',]
 
     def serialize(self, obj=None):
+        '''
+        转换相应对象为json可序列化对象
+        :param obj: Page 或者 QuerySet对象
+        :return: 序列化后的结果集，字典或者列表
+        '''
         if isinstance(obj, Page):
             ret = dict([(key, obj.__getattribute__(key)()) for key in self.pageAttr])
             ret['object_list'] = self.serialize(obj.object_list)

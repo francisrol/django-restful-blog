@@ -78,7 +78,8 @@ def blogDetail(request, slug):
         return HttpResponse(data, status=405)
     oneBlogObj = BlogModel.objects.filter(slug=slugify(slug))
     # 把QuerySet对象对象序列化为json格式数据
-    oneBlogObj = serializers.serialize('json', oneBlogObj)
+    # oneBlogObj = serializers.serialize('json', oneBlogObj)
+    oneBlogObj = json.dumps(PageOrQuerySetSerializer().serialize(oneBlogObj))
     if not oneBlogObj:
         # 如果不存在，那么返回404
         data = json.dumps({"message":"'您访问的内容不存在'"})

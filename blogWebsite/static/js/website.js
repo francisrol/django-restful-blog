@@ -139,8 +139,7 @@ function getBlogDetail(){
     parmas.type = 'GET';
     parmas.success = function(data){
         data = JSON.parse(data);
-        var blog = data[0].fields;
-        console.log(blog.title);
+        var blog = data[0];
         var html = detail_template.format(blog.title, blog.createdTime, blog.keyWords, blog.summary, blog.content);
         $('.blog-detail').html(html);
         $('pre code').each(function(i, block) {
@@ -161,7 +160,7 @@ function getBlogEdit(){
     parmas.type = 'GET';
     parmas.success = function(data){
         data = JSON.parse(data);
-        var blog = data[0].fields;
+        var blog = data[0];
         $("#title").val(blog.title);
         $("#summary").val(blog.summary);
         $("#content").val(blog.content);
