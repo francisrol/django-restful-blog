@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 
 
 class BlogModel(models.Model):
+    allowedFields = ['title','keyWords','summary','content','createdTime','lastEditTime','category','visitedNumber','slug']
     # 标题
     title = models.CharField('标题', max_length=31)
     # 关键字

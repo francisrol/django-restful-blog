@@ -4,7 +4,9 @@ import json
 from django.http import HttpResponse
 from django.core import serializers
 from django.conf import settings
+from django.core.paginator import Paginator
 from api_blogs.models import BlogModel
+from api_blogs.serializers import PageOrQuerySetSerializer
 import markdown
 
 # 将中文转换为拼音，并用-链接在一起
@@ -14,7 +16,7 @@ from uuslug import slugify
 # Create your views here.
 # 博客的增删改查
 
-def blogList(request, orderby='createdTime', ):
+def blogList(request, category=None):
     '''
     客户端使用的应当是GET请求
     返回博客列表
@@ -28,13 +30,38 @@ def blogList(request, orderby='createdTime', ):
         return HttpResponse(data, status=405)
 
     allBlogObj = BlogModel.objects.all().order_by('-createdTime')
+
+    # ----分类----
+    if category:
+        allBlogObj = allBlogObj.filter(category=category)
+    # ----分类----
+
+    # ----排序----
+    orderby = request.GET.get('orderby', '')
+    if orderby:
+        allBlogObj = allBlogObj.order_by(orderby)
+    # ----排序----
+
+    # ----分页----
+    allPages = Paginator(allBlogObj, 2)
+    page = request.GET.get("page", 1)
+    try:
+        page = int(page)
+    except:
+        page = 1
+    pageData = allPages.page(page)
+    print(dir(pageData))
+    # ----分页----
+
     # 因为allBlogObj是django的QuerySet对象
     # 所以需要使用from django.core import serializers
     # 把对象序列化为json格式数据
     # 在python中json格式的数据表现形式就是一个字符串
     # serialize接受的必须是一个可迭代对象如[],{}等 all方法出来的就是一个列表，所以直接放入
-    allBlogObj = serializers.serialize('json', allBlogObj)
-    return HttpResponse(allBlogObj)
+    # pageData = serializers.serialize('json', pageData)
+    pageData = PageOrQuerySetSerializer().serialize(pageData)
+    pageData = json.dumps(pageData)
+    return HttpResponse(pageData)
 
 def blogDetail(request, slug):
     '''

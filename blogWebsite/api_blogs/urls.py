@@ -6,6 +6,7 @@ from api_blogs.views import *
 
 urlpatterns = [
     url(r'^list/$', blogList),  # 博客列表
+    url(r'^list/category/(?P<category>.*?)/$', blogList),  # 博客列表
     url(r'^detail/(?P<slug>.+)?/$', blogDetail),  # 博客详情
     url(r'^create/$', createBlog),  # 创建博客
     url(r'^edit/(?P<slug>.+)?/$', editBlog),  # 博客编辑

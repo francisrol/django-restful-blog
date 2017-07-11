@@ -116,9 +116,10 @@ function getListData(){
     parmas.type = 'GET';
     parmas.success = function (data) {
         data = JSON.parse(data);
+        var object_list = data.object_list;
         var html = '';
-        for(var i=0;i<data.length; i++){
-            var blog = data[i].fields;
+        for(var i=0;i<object_list.length; i++){
+            var blog = object_list[i];
             console.log(blog.title);
             var blogHtml = list_template.format(blog.title, blog.createdTime, blog.keyWords, blog.summary, blog.slug);
             html += blogHtml;
