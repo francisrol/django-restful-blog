@@ -23,7 +23,8 @@ class PageOrQuerySetSerializer(object):
         if isinstance(obj, Page):
             ret = dict([(key, obj.__getattribute__(key)()) for key in self.pageAttr])
             ret['object_list'] = self.serialize(obj.object_list)
-            ret['number'] = obj.number
+            ret['page_index'] = obj.number
+            ret['page_numbers'] = obj.paginator.num_pages
             return ret
         elif isinstance(obj, QuerySet):
             # datetime 实例序列化为字符串

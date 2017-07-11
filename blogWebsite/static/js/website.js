@@ -36,11 +36,15 @@ String.prototype.format = function(args) {
     return result;
 }
 
-var list_template = '<div class="blog-post"><h2><a href="/detail/{4}/" target="_blank" >{0}</a></h2><h4>{1}</h4><div><em>关键字：{2}</em></div>{3}<a href="/detail/{4}/" target="_blank" class="btn btn-default btn-lg">Read More <i class="fa fa-angle-right"></i></a></div>';
+var list_template = '<div class="blog-post"><h2><a href="/detail/{4}/" target="_blank" >{0}</a></h2><h4>{1}</h4><div><em>关键字：{2}</em></div>{3}<a href="/detail/{4}/" target="_blank" class="btn btn-default">Read More <i class="fa fa-angle-right"></i></a></div>';
 
 var detail_template = '<div class="blog-post"><h2>{0}</h2><div class="clearfix"><h4 class="pull-left">{1}</h4><div class="pull-right"><em>关键字：{2}</em></div></div><blockquote >{3}</blockquote>{4}</div>';
 
 var radio_template = '<option>{0}</option>';
+
+var page_template = '<li><a href="{0}">{1}</a></li>';
+
+var category_template = '<li class="list-group-item btn btn-default">{0}</li>';
 
 var parmas = {
         "url": "/",
@@ -78,7 +82,6 @@ function sendBlogData(sendData, url, method, redirectUrl){
     parmas.type = method;
     parmas.data = sendData;
     parmas.success = function (data) {
-        console.log(data);
         location.assign(redirectUrl);
     }
     $.ajax(parmas);
@@ -107,20 +110,85 @@ function clickSubmit(url, method, redirectUrl){
     })
 }
 
+function searchStringToObj() {
+    // 获取URL中?及其之后的字符
+    var str = location.search;
+     var obj = new Object();
+    if (str == ""){
+        return obj
+    }
+    str = str.substring(1,str.length); // 去掉？
+
+    // 以&分隔字符串，获得类似name=xiaoli这样的元素数组
+    var arr = str.split("&");
+
+    // 将每一个数组元素以=分隔并赋给obj对象
+    for(var i = 0; i < arr.length; i++) {
+        var tmp_arr = arr[i].split("=");
+        obj[decodeURIComponent(tmp_arr[0])] = decodeURIComponent(tmp_arr[1]);
+    }
+    return obj
+}
+
+function searchObjToString(obj){
+    /*
+    查询对象转字符串
+     */
+    var str = '';
+    for(var key in obj){
+        str += key+'=';
+        str += obj[key].toString();
+        str += "&";
+    }
+    return str.slice(0,-1);
+}
+
+function createPageHtml(pageObj){
+    /*
+    生成分页的HTML
+     */
+    var pageHtml = '';
+    path_url = location.pathname;
+    searchObj = searchStringToObj();
+    // 判断是否有上一页
+    if (pageObj.has_previous){
+        searchObj.page = parseInt(pageObj.page_index)-1;
+        $('.page_previous a').prop('href', path_url + '?' + searchObjToString(searchObj));
+    }else{
+        $('.page_previous').addClass("disabled");
+    }
+    // 判断是否有下一页
+    if (pageObj.has_next){
+        searchObj.page = parseInt(pageObj.page_index)+1;
+        $('.page_next a').prop('href', path_url + '?' + searchObjToString(searchObj));
+    }else{
+        $('.page_next').addClass("disabled");
+    }
+    for(var i=0;i<parseInt(pageObj.page_numbers); i++){
+        searchObj.page = i+1;
+        var html = page_template.format(path_url + '?' + searchObjToString(searchObj), i+1);
+        pageHtml += html;
+    }
+    $(".pagination li").eq(0).after(pageHtml);  // 将生成的html加载到页面
+
+}
+
 function getListData(){
     /*
     首页调用：
     获取博客列表
      */
+    search_parmas = searchStringToObj();
     parmas.url = '/api/blog/list/';
+    parmas.data = search_parmas;
     parmas.type = 'GET';
     parmas.success = function (data) {
         data = JSON.parse(data);
+        createPageHtml(data);
         var object_list = data.object_list;
         var html = '';
         for(var i=0;i<object_list.length; i++){
             var blog = object_list[i];
-            console.log(blog.title);
             var blogHtml = list_template.format(blog.title, blog.createdTime, blog.keyWords, blog.summary, blog.slug);
             html += blogHtml;
         };
@@ -166,9 +234,7 @@ function getBlogEdit(){
         $("#content").val(blog.content);
         $("#keyWords").val(blog.keyWords);
         $('#category').val(blog.category);
-        method = 'PUT';
-        redirectUrl = url;
-        clickSubmit(url, method, redirectUrl)
+        clickSubmit(url, 'PUT', url);
     };
     $.ajax(parmas);
 }
@@ -184,3 +250,21 @@ function getCreateBlog(){
     clickSubmit(url, method, redirectUrl);
 }
 
+function showCategory(){
+    /*
+    请求博客分类，并显示到页面
+     */
+    $.ajax({
+        "url": "/api/blog/categories/",
+        "type" : 'GET',
+        "success" : function(data){
+            data = JSON.parse(data);
+            var categoryHtml = '';
+            for(var i=0;i<data.length; i++){
+                var html = category_template.format(data[i][1]);
+                categoryHtml += html;
+            }
+            $(".list-group li").after(categoryHtml);
+        }
+    });
+}

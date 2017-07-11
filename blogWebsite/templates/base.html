@@ -106,15 +106,8 @@
             <div class="col-md-3" style="padding-top: 30px;">
 				<div class="row">
                 <ul class="list-group">
-                    <li class="list-group-item"><strong>CATEGORIES</strong></li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
+                    <li class="list-group-item text-center"><strong>CATEGORIES</strong></li>
+
                 </ul>
 				</div>
 				<div class="row">
@@ -143,11 +136,14 @@
     <!-- BOOTSTRAP SCRIPTS -->
     <script src="/static/js/bootstrap.js"></script>
     <script src="/static/js/website.js"></script>
+    <script>
+        showCategory();
+    </script>
     {% block script %}
     <script>
         $(function() {
             $('textarea').markdown();
-            getListData()
+            getListData();
         });
     </script>
     {% endblock %}
