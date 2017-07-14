@@ -123,9 +123,14 @@ color: #FFFFFF;
     background-color:#000000;
      margin-top:50px;
 }
-.foo-inner {
+.foo-inner-left {
+    text-align:left;
+    padding:20px 30px;
+    color:#fff;
+}
+
+.foo-inner-right {
     text-align:right;
     padding:20px 30px;
     color:#fff;
-   
 }

@@ -40,14 +40,17 @@ var list_template = '<div class="blog-post"><h2><a href="/detail/{4}/" target="_
 
 var detail_template = '<div class="blog-post"><h2>{0}</h2><div class="clearfix"><h4 class="pull-left">{1}</h4><div class="pull-right"><em>关键字：{2}</em></div></div><blockquote >{3}</blockquote>{4}</div>';
 
-var radio_template = '<option>{0}</option>';
+var option_template = '<option>{0}</option>';
 
 var page_template = '<li><a href="{0}">{1}</a></li>';
 
 var active_page_template = '<li class="active"><a>{0}</a></li>';
 
-var category_template = '<li class="list-group-item btn btn-default"><a href="{0}" class="list-group-item">{1}</a></li>';
+var category_template = '<li class="list-group-item btn btn-default"><a href="/category/{0}/" class="list-group-item">{1}</a></li>';
 
+var family_template = '<li><a href="/family/{0}/">{1}</a></li>';
+
+var edit_template = '<a href="{0}" class="btn btn-default btn-xs" id="{1}"><i class="fa fa-{2} fa-1x"></i></a>'
 
 var parmas = {
         "url": "/",
@@ -69,7 +72,7 @@ function getCategories(){
             var html = '';
             for(var i=0;i<data.length; i++){
                 var category = data[i];
-                var oneHtml = radio_template.format(category[1]);
+                var oneHtml = option_template.format(category[1]);
                 html += oneHtml;
             }
             $('#category').html(html);
@@ -189,7 +192,7 @@ function getListData(){
     获取博客列表
      */
     search_parmas = searchStringToObj();
-    parmas.url = '/api/blog/list' + location.pathname;
+    parmas.url = '/api/blog/list' + decodeURIComponent(location.pathname);
     parmas.data = search_parmas;
     parmas.type = 'GET';
     parmas.success = function (data) {
@@ -223,6 +226,9 @@ function getBlogDetail(){
         $('pre code').each(function(i, block) {
             hljs.highlightBlock(block);
           });
+        var editBtn = edit_template.format('/edit/'+blog.slug+'/', 'edit', 'edit');
+        var deleteBtn = edit_template.format('/delete/'+blog.slug+'/', 'remove', 'remove');
+        $("#add").after(editBtn+deleteBtn);
     };
     $.ajax(parmas)
 }
@@ -271,7 +277,7 @@ function showCategory(){
             data = JSON.parse(data);
             var categoryHtml = '';
             for(var i=0;i<data.length; i++){
-                var html = category_template.format("/category/"+data[i][1]+"/",data[i][1]);
+                var html = category_template.format(data[i][1], data[i][1]);
                 categoryHtml += html;
             }
             $(".list-group li").after(categoryHtml);
@@ -279,5 +285,23 @@ function showCategory(){
     });
 }
 
-function clickCategory(){
+function showFamily(){
+    /*
+    请求博客分类，并显示到页面
+     */
+    $.ajax({
+        "url": "/api/blog/allFamily/",
+        "type" : 'GET',
+        "success" : function(data){
+            data = JSON.parse(data);
+            var beforeHtml = '';
+            for(var i=0;i<data.length-1; i++){
+                var html = family_template.format(data[i][1],data[i][1]);
+                beforeHtml += html;
+            }
+            var afterHtml = family_template.format(data[data.length-1][1], data[data.length-1][1]);
+            $(".divider").before(beforeHtml);
+            $(".divider").after(afterHtml);
+        }
+    });
 }

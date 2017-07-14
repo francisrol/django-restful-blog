@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from api_blogs.models import BlogModel
 from api_blogs.serializers import PageOrQuerySetSerializer
+from api_blogs.permissions import permission
 import markdown
 
 # 将中文转换为拼音，并用-链接在一起
@@ -15,31 +16,33 @@ from uuslug import slugify
 
 # Create your views here.
 # 博客的增删改查
-
-def blogList(request, category=None):
+@permission.allowedMethod(["GET"])
+def blogList(request, category=None, family=None):
     '''
     客户端使用的应当是GET请求
     返回博客列表
     :param request:django自动传入
     :return: HttpResponse对象
     '''
-    # 判断方法是不是GET方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
-    if request.method != 'GET':
-        # json.dumps方法把python的数据类型转换为json格式数据
-        data = json.dumps({"message": "only allowed GET method"})
-        return HttpResponse(data, status=405)
+    # # 判断方法是不是GET方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
+    # if request.method != 'GET':
+    #     # json.dumps方法把python的数据类型转换为json格式数据
+    #     data = json.dumps({"message": "only allowed GET method"})
+    #     return HttpResponse(data, status=405)
 
     allBlogObj = BlogModel.objects.all().order_by('-createdTime')
 
     # ----分类----
-    if category:
-        allBlogObj = allBlogObj.filter(category=category)
+    allBlogObj = allBlogObj.filter(category=category) if category else allBlogObj
     # ----分类----
 
+    # ----系列----
+    allBlogObj = allBlogObj.filter(family=family) if family else allBlogObj
+    # ----系列----
+
     # ----排序----
-    orderby = request.GET.get('orderby', '')
-    if orderby:
-        allBlogObj = allBlogObj.order_by(orderby)
+    orderBy = request.GET.get('orderby', '')
+    allBlogObj = allBlogObj.order_by(orderBy) if orderBy else allBlogObj
     # ----排序----
 
     # ----分页----
@@ -50,19 +53,18 @@ def blogList(request, category=None):
     except:
         page = 1
     pageData = allPages.page(page)
-    print(dir(pageData))
     # ----分页----
 
     # 因为allBlogObj是django的QuerySet对象
     # 所以需要使用from django.core import serializers
     # 把对象序列化为json格式数据
     # 在python中json格式的数据表现形式就是一个字符串
-    # serialize接受的必须是一个可迭代对象如[],{}等 all方法出来的就是一个列表，所以直接放入
     # pageData = serializers.serialize('json', pageData)
     pageData = PageOrQuerySetSerializer().serialize(pageData)
     pageData = json.dumps(pageData)
     return HttpResponse(pageData)
 
+@permission.allowedMethod(["GET"])
 def blogDetail(request, slug):
     '''
     客户端使用的应当是GET请求
@@ -71,11 +73,11 @@ def blogDetail(request, slug):
     :param slug: 用于匹配url
     :return:HttpResponse对象
     '''
-    # 判断方法是不是GET方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
-    if request.method != 'GET':
-        # json.dumps方法把python的数据类型转换为json格式数据
-        data = json.dumps({"message": "only allowed GET method"})
-        return HttpResponse(data, status=405)
+    # # 判断方法是不是GET方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
+    # if request.method != 'GET':
+    #     # json.dumps方法把python的数据类型转换为json格式数据
+    #     data = json.dumps({"message": "only allowed GET method"})
+    #     return HttpResponse(data, status=405)
     oneBlogObj = BlogModel.objects.filter(slug=slugify(slug))
     # 把QuerySet对象对象序列化为json格式数据
     # oneBlogObj = serializers.serialize('json', oneBlogObj)
@@ -87,6 +89,9 @@ def blogDetail(request, slug):
 
     return HttpResponse(oneBlogObj)
 
+
+@permission.allowedMethod(["POST"])
+@permission.hasEditPermission
 def createBlog(request):
     '''
     客户端使用的应当是POST请求，携带请求数据
@@ -94,11 +99,11 @@ def createBlog(request):
     :param request: django自动传入
     :return: HttpResponse对象
     '''
-    # 判断方法是不是POST方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
-    if request.method != 'POST':
-        # json.dumps方法把python的数据类型转换为json格式数据
-        data = json.dumps({"message": "only allowed POST method"})
-        return HttpResponse(data, status=405)
+    # # 判断方法是不是POST方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
+    # if request.method != 'POST':
+    #     # json.dumps方法把python的数据类型转换为json格式数据
+    #     data = json.dumps({"message": "only allowed POST method"})
+    #     return HttpResponse(data, status=405)
 
     # 获取来自客户端POST提交的数据
     # 如果以表单形式提交的数据django会帮我们放在request.POST里
@@ -143,6 +148,8 @@ def createBlog(request):
     # 201状态码，表明请求创建的资源已经成功创建
     return HttpResponse(retblog, status=201)
 
+@permission.allowedMethod(["PUT"])
+@permission.hasEditPermission
 def editBlog(request, slug):
     '''
     客户端使用的应当是PUT请求
@@ -151,11 +158,11 @@ def editBlog(request, slug):
     :param slug: 用于匹配url
     :return:HttpResponse对象
     '''
-    # 判断方法是不是PUT方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
-    if request.method != 'PUT':
-        # json.dumps方法把python的数据类型转换为json格式数据
-        data = json.dumps({"message": "only allowed PUT method"})
-        return HttpResponse(data, status=405)
+    # # 判断方法是不是PUT方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
+    # if request.method != 'PUT':
+    #     # json.dumps方法把python的数据类型转换为json格式数据
+    #     data = json.dumps({"message": "only allowed PUT method"})
+    #     return HttpResponse(data, status=405)
 
     # 从数据库取出主键为pk的博客，如果不存在，filter返回的[]
     blog = BlogModel.objects.filter(slug=slugify(slug))
@@ -179,21 +186,24 @@ def editBlog(request, slug):
 
     # 过滤数据，判断数据是否为空，如果为空就不更新数据
     # 因为使用的filter方法，返回的是列表，所以需要取出下标0的元素才是BlogModel对象
+    blog = blog[0]
     if title:
-        blog[0].title = title
+        blog.title = title
     if summary:
-        blog[0].summary = summary
+        blog.summary = summary
     if content:
-        blog[0].content = content
+        blog.content = content
     if keyWords:
-        blog[0].keyWords = keyWords
+        blog.keyWords = keyWords
     if category:
-        blog[0].category = category
-    blog[0].save()
+        blog.category = category
+    blog.save()
     # 把QuerySet对象序列化为json格式数据
-    retblog = serializers.serialize('json', blog)
+    retblog = serializers.serialize('json', [blog])
     return HttpResponse(retblog, status=200)
 
+@permission.allowedMethod(["DELETE"])
+@permission.hasEditPermission
 def deleteBlog(request, slug):
     '''
     客户端使用的应当是DELETE方法
@@ -202,11 +212,11 @@ def deleteBlog(request, slug):
     :param slug: 用于匹配url
     :return:HttpResponse对象
     '''
-    # 判断方法是不是DELETE方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
-    if request.method != 'DELETE':
-        # json.dumps方法把python的数据类型转换为json格式数据
-        data = json.dumps({"message": "only allowed DELETE method"})
-        return HttpResponse(data, status=405)
+    # # 判断方法是不是DELETE方法，如果不是，那么返回405（请求行中指定的请求方法不能被用于请求相应的资源）
+    # if request.method != 'DELETE':
+    #     # json.dumps方法把python的数据类型转换为json格式数据
+    #     data = json.dumps({"message": "only allowed DELETE method"})
+    #     return HttpResponse(data, status=405)
 
     # 从数据库取出主键为pk的博客，如果不存在，filter返回的[]
     blog = BlogModel.objects.filter(slug=slugify(slug))
@@ -219,6 +229,7 @@ def deleteBlog(request, slug):
     blog[0].delete()
     return HttpResponse('删除成功', status=200)
 
+@permission.allowedMethod(["GET"])
 def getCategories(request):
     '''
     获取分类信息
@@ -228,3 +239,33 @@ def getCategories(request):
     categories = settings.CATEGORIES
     retData = json.dumps(categories)
     return HttpResponse(retData)
+
+@permission.allowedMethod(["GET"])
+def getBlogFamily(request):
+    '''
+    获取系列性文章
+    :param request:
+    :return:
+    '''
+    family = settings.BLOGFAMILY
+    retData = json.dumps(family)
+    return HttpResponse(retData)
+
+@permission.allowedMethod(["POST"])
+def getPermission(request, ):
+    '''
+    设置权限
+    保存到session中
+    过期时间三十分钟
+    :param request:
+    :return:
+    '''
+    if request.method == 'POST':
+        code = request.POST.get('permission', '')
+        if code == permission.getPermissionCode():
+            # 设置一定时间的权限，保存到sessions
+            request.session['permissionCode'] = code
+            return HttpResponse(status=204)
+        return HttpResponse(status=403)
+    else:
+        return HttpResponse(status=405)

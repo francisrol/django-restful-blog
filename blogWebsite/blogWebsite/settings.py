@@ -51,7 +51,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'api_blogs.middlewares.ResponseDataHandleMiddleware',
 )
 
 ROOT_URLCONF = 'blogWebsite.urls'
@@ -107,7 +106,16 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+# 会话cookie有效期
+SESSION_COOKIE_AGE = 60*1
+# 浏览器关闭，会话cookie失效
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 CATEGORIES = [
     (1,'机器学习'),(2,'爬虫'),(3, '数据分析'),(4, 'web'), (5, '数据结构'), (6, 'HTTP')
 ]
+
+BLOGFAMILY = [
+    (1, '杂文笔记'),(-1,'其他')
+]
+

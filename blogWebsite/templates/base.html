@@ -59,18 +59,12 @@
 {#                    Say hello to me at <strong>hello</strong>@yourdomain.com#}
                     <ul class="nav nav-tabs">
                         <li role="presentation"><a href="/">全部文章</a></li>
-                        <li role="presentation"><a href="#">最热门文章</a></li>
-                        <li role="presentation"><a href="#">最新文章</a></li>
-                        <li role="presentation"><a href="/create/">新建文章</a></li>
-
+{#                        <li role="presentation"><a href="#">最热门文章</a></li>#}
+{#                        <li role="presentation"><a href="#">最新文章</a></li>#}
                         <li class="dropdown navbar-right">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">教程系列<span class="caret"></span></a>
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">系列文章<span class="caret"></span></a>
                           <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a href="#">使用django快速开发restful网站教程</a></li>
-                            <li><a href="#">djangorestframework框架入门教程</a></li>
-                            <li><a href="#">python爬虫实战教程</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
                           </ul>
                         </li>
                     </ul>
@@ -117,11 +111,15 @@
     </div>
 
     <!--END HOME PAGE SECTION-->
+    {% include "modal.html" %}
     <div class="footer-sec" style="margin-top: 0px;">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 foo-inner">
+                <div class="col-md-8 foo-inner-left">
                     &copy; 2017 blog.luosongtao.com | Powered BY <a href="http://www.cssmoban.com/" target="_blank" title="Django">Django</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">Bootstrape</a>
+                </div>
+                <div class="col-md-4 foo-inner-right">
+                    <a href="/create/" class="btn btn-default btn-xs" id="add"><i class="fa fa-plus fa-1x"></i></a>
                 </div>
             </div>
         </div>
@@ -137,6 +135,7 @@
     <script src="/static/js/website.js"></script>
     <script>
         showCategory();
+        showFamily();
     </script>
     {% block script %}
     <script>

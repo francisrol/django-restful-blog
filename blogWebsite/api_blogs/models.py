@@ -8,9 +8,8 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-
 class BlogModel(models.Model):
-    allowedFields = ['title','keyWords','summary','content','createdTime','lastEditTime','category','visitedNumber','slug']
+    allowedFields = ['title','keyWords','summary','content','createdTime','lastEditTime','category', 'family','visitedNumber','slug']
     # 标题
     title = models.CharField('标题', max_length=31)
     # 关键字
@@ -29,6 +28,8 @@ class BlogModel(models.Model):
     # 提供选项卡功能：添加choices关键字参数
     # 默认为web
     category = models.CharField('分类', max_length=15, default='web', choices=settings.CATEGORIES)
+    # 系列
+    family = models.CharField('系列', max_length=63, default='其他', choices=settings.BLOGFAMILY)
     # 访问量
     visitedNumber = models.IntegerField('访问量', default=0)
 
