@@ -107,7 +107,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # 会话cookie有效期
-SESSION_COOKIE_AGE = 60*1
+SESSION_COOKIE_AGE = 60*60
 # 浏览器关闭，会话cookie失效
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -119,3 +119,5 @@ BLOGFAMILY = [
     (1, '杂文笔记'),(-1,'其他')
 ]
 
+LOGINNAME = 'LOGINNAME'
+LOGINPASSWD = 'LOGINPASSWD'

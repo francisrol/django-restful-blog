@@ -3,12 +3,17 @@
 import os
 from functools import wraps
 from django.shortcuts import render
+from django.conf import settings
 
 
 class Permission(object):
 
-    # def __new__(cls, *args, **kwargs):
-    #     return super(Permission, cls).__new__(*args, **kwargs)
+    __instance = None
+    # 单例模式
+    def __new__(cls, *args, **kwargs):
+        if not cls.__instance:
+            cls.__instance = super(Permission, cls).__new__(cls, *args, **kwargs)
+        return cls.__instance
 
     def hasEditPermission(self, func):
         '''
@@ -17,8 +22,9 @@ class Permission(object):
         '''
         @wraps(func)
         def inner(request, *args, **kwargs):
-            permissionCode = request.session.get("permissionCode", '')
-            if permissionCode != self.getPermissionCode():
+            permissionCodeName = request.session.get("permissionCodeName", '')
+            permissionCodePasswd = request.session.get("permissionCodePasswd", '')
+            if not self.getPermissionCode(permissionCodeName, permissionCodePasswd):
                 # return HttpResponse("很抱歉，您没有访问该页面的权限！",status=403)
                 return render(request, 'error/403.html', {"message":"很抱歉，您没有访问该页面的权限"}, status=403)
             return func(request, *args, **kwargs)
@@ -39,12 +45,13 @@ class Permission(object):
             return inner
         return decorator
 
-    def getPermissionCode(self):
+    def getPermissionCode(self,loginName , loginPasswd):
         '''
         从系统环境变量中，提取秘钥token信息
         :return:
         '''
-        return os.environ.get('BLOGPERMISSION')
+        return loginName == os.environ.get(settings.LOGINNAME) and loginPasswd== os.environ.get(settings.LOGINPASSWD)
+
 
 
 permission = Permission()

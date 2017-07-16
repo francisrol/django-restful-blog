@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-
 class BlogModel(models.Model):
     allowedFields = ['title','keyWords','summary','content','createdTime','lastEditTime','category', 'family','visitedNumber','slug']
     # 标题

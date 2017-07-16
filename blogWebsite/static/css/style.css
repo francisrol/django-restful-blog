@@ -21,7 +21,7 @@ body {
  ============================================================ */
 #header {
     background-color: #0C739B;
-     background: url(../img/1.jpg) no-repeat center center;
+     background: url(../img/bg.jpg) no-repeat center center;
     padding: 0;
     -webkit-background-size: cover;
     background-size: cover;

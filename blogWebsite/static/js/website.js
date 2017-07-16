@@ -60,25 +60,6 @@ var parmas = {
         }
     };
 
-function getCategories(){
-    /*
-    获取分类信息
-     */
-    $.ajax({
-        "url": "/api/blog/categories/",
-        "type" : 'GET',
-        "success" : function(data){
-            data = JSON.parse(data);
-            var html = '';
-            for(var i=0;i<data.length; i++){
-                var category = data[i];
-                var oneHtml = option_template.format(category[1]);
-                html += oneHtml;
-            }
-            $('#category').html(html);
-        }
-    });
-}
 
 function sendBlogData(sendData, url, method, redirectUrl){
     /*
@@ -238,7 +219,6 @@ function getBlogEdit(){
     博客编辑页调用
     获取某篇文章详情
      */
-    getCategories();
     url = location.pathname;
     parmas.url = '/api/blog/detail/' + url.split('/')[2] + '/';
     parmas.type = 'GET';
@@ -250,6 +230,7 @@ function getBlogEdit(){
         $("#content").val(blog.content);
         $("#keyWords").val(blog.keyWords);
         $('#category').val(blog.category);
+        $('#family').val(blog.family);
         clickSubmit(url, 'PUT', url);
     };
     $.ajax(parmas);
@@ -281,6 +262,15 @@ function showCategory(){
                 categoryHtml += html;
             }
             $(".list-group li").after(categoryHtml);
+            if (location.pathname.slice(0,5) == '/edit' | location.pathname.slice(0,8) == '/create/'){
+                var html = '';
+                for(var i=0;i<data.length; i++){
+                    var category = data[i];
+                    var oneHtml = option_template.format(category[1]);
+                    html += oneHtml;
+                }
+                $('#category').html(html);
+            }
         }
     });
 }
@@ -302,6 +292,16 @@ function showFamily(){
             var afterHtml = family_template.format(data[data.length-1][1], data[data.length-1][1]);
             $(".divider").before(beforeHtml);
             $(".divider").after(afterHtml);
+            if (location.pathname.slice(0,5) == '/edit' | location.pathname.slice(0,8) == '/create/'){
+                var html = '';
+                for(var i=0;i<data.length; i++){
+                    var family = data[i];
+                    var oneHtml = option_template.format(family[1]);
+                    html += oneHtml;
+                }
+                console.log(html);
+                $('#family').html(html);
+            }
         }
     });
 }

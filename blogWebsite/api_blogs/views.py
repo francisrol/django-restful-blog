@@ -47,10 +47,12 @@ def blogList(request, category=None, family=None):
 
     # ----分页----
     allPages = Paginator(allBlogObj, 2)
-    page = request.GET.get("page", 1)
+    page = request.GET.get("page", 1)    # 从查询字符串获取page属性
     try:
         page = int(page)
-    except:
+        page = allPages.num_pages if page>allPages.num_pages else page
+        page = page if page>0 else 1
+    except Exception:
         page = 1
     pageData = allPages.page(page)
     # ----分页----
@@ -243,7 +245,7 @@ def getCategories(request):
 @permission.allowedMethod(["GET"])
 def getBlogFamily(request):
     '''
-    获取系列性文章
+    获取系列信息
     :param request:
     :return:
     '''
@@ -256,15 +258,17 @@ def getPermission(request, ):
     '''
     设置权限
     保存到session中
-    过期时间三十分钟
+    过期时间在settings文件中设置
     :param request:
     :return:
     '''
     if request.method == 'POST':
-        code = request.POST.get('permission', '')
-        if code == permission.getPermissionCode():
+        loginName = request.POST.get('loginName', '')
+        loginPasswd = request.POST.get('loginPasswd', '')
+        if permission.getPermissionCode(loginName, loginPasswd):
             # 设置一定时间的权限，保存到sessions
-            request.session['permissionCode'] = code
+            request.session['permissionCodeName'] = loginName
+            request.session['permissionCodePasswd'] = loginPasswd
             return HttpResponse(status=204)
         return HttpResponse(status=403)
     else:
