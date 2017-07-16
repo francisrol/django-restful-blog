@@ -135,8 +135,8 @@ function createPageHtml(pageObj){
     生成分页的HTML
      */
     var pageHtml = '';
-    path_url = location.pathname;
-    searchObj = searchStringToObj();
+    var path_url = location.pathname;
+    var searchObj = searchStringToObj();
     // 判断是否有上一页
     if (pageObj.has_previous){
         searchObj.page = parseInt(pageObj.page_index)-1;
@@ -172,7 +172,7 @@ function getListData(){
     首页调用：
     获取博客列表
      */
-    search_parmas = searchStringToObj();
+    var search_parmas = searchStringToObj();
     parmas.url = '/api/blog/list' + decodeURIComponent(location.pathname);
     parmas.data = search_parmas;
     parmas.type = 'GET';
@@ -196,7 +196,7 @@ function getBlogDetail(){
     博客详情页调用
     获取某篇文章详情
      */
-    url = location.pathname;
+    var url = location.pathname;
     parmas.url = '/api/blog' + url;
     parmas.type = 'GET';
     parmas.success = function(data){
@@ -219,7 +219,7 @@ function getBlogEdit(){
     博客编辑页调用
     获取某篇文章详情
      */
-    url = location.pathname;
+    var url = location.pathname;
     parmas.url = '/api/blog/detail/' + url.split('/')[2] + '/';
     parmas.type = 'GET';
     parmas.success = function(data){
@@ -240,10 +240,9 @@ function getCreateBlog(){
     /*
     创建博客
      */
-    getCategories();
-    url = location.pathname;
-    method = 'POST';
-    redirectUrl = '/';
+    var url = location.pathname;
+    var method = 'POST';
+    var redirectUrl = '/';
     clickSubmit(url, method, redirectUrl);
 }
 
