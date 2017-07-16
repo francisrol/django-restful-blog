@@ -90,7 +90,7 @@ ENV/
 .idea/
 
 .DS_Store
-dist/
+
 
 *.sqlite3
-migrations/
+
