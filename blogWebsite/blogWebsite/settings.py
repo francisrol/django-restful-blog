@@ -22,12 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'vlk5b5#socmtw_hu323ny8-q5yzz(=-0yh9i&er+tzom^3y$2a'
+SECRET_KEY = 'hello world'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0',]
 
 
 # Application definition
@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'blogWebsite.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": 'django.db.backends.mysql',
-        "NAME": "blogWebsite",
-        "USER": "website",
-        "PASSWD": "website",
-        "HOST": "localhost",
+        "NAME": os.environ.get('EC2_MYSQL_DB'),
+        "USER": os.environ.get('EC2_MYSQL_USER'),
+        "PASSWORD": os.environ.get('EC2_MYSQL_PASSWD'),
+        "HOST": os.environ.get('EC2_MYSQL_HOST'),
         "PORT": 3306,
     }
 }
